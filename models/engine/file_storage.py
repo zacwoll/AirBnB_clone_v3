@@ -81,6 +81,6 @@ class FileStorage:
     def count(self, cls=None):
         """ Returns the quantity of all items or a class of items """
         if cls is None:
-            return len(self.__storage())
+            return len(self.__objects)
         else:
-            return len(self.__storage(cls))
+            return len(self.all(cls))
