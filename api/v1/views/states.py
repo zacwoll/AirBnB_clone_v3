@@ -22,13 +22,13 @@ def get_state(state_id):
     except:
         abort(404)
 
+
 @app_views.route('/api/v1/states/<state_id>', methods=['DELETE'],
                  strict_slashes=False)
 def del_state(state_id):
     """ DELETE /api/v1/states/<state_id> """
     try:
         state = storage.get(State, state_id)
-        state.delete()
         storage.delete(state)
         storage.save()
         return {}, 200
