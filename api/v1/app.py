@@ -15,11 +15,6 @@ def close_session(response):
     """ Closes DB session """
     storage.close()
 
-@app.route('/', strict_slashes=False)
-def index():
-    """returns Hello HBNB!"""
-    return 'Hello HBNB!'
-
 
 if __name__ == "__main__":
     host = getenv("HBNB_API_HOST", "0.0.0.0")
