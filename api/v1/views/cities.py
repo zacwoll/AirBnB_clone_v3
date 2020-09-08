@@ -5,8 +5,8 @@ Cities class for api
 from flask import Flask, jsonify, abort, request
 from api.v1.views import app_views
 from models import storage
-from models import City
-from models import State
+from models.city import City
+from models.state import State
 
 
 @app_views.route('/api/v1/states/<state_id>/cities', strict_slashes=False)
@@ -53,6 +53,7 @@ def create_city(state_id):
         abort(400, {"Not a JSON"})
     elif 'name' not in city_name:
         abort(400, {"Missing name"})
+    city_name['state_id'] = state_id
     new_city = City(**city_name)
     storage.new(new_city)
     storage.save()
@@ -62,7 +63,7 @@ def create_city(state_id):
 @app_views.route('/api/v1/cities/<city_id>/',
                  strict_slashes=False, methods=["PUT"])
 def update_city(city_id):
-    """PUT /api/v1/cities/<city_id> """
+    """ PUT /api/v1/cities/<city_id> """
     get_city = request.get_json()
     if not get_city:
         abort(400, "{Not a JSON}")
