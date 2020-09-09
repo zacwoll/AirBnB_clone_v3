@@ -25,7 +25,7 @@ def get_city(city_id):
     try:
         city = storage.get(City, city_id).to_dict()
         return jsonify(city)
-    except:
+    except AttributeError:
         abort(404)
 
 
@@ -33,8 +33,8 @@ def get_city(city_id):
                  strict_slashes=False, methods=["DELETE"])
 def delete_city(city_id):
     """ DELETE /api/v1/cities/<city_id> """
-    try:
-        city = storage.get(City, city_id)
+    city = storage.get(City, city_id)
+    if city:
         storage.delete(city)
         storage.save()
         return {}, 200
@@ -46,15 +46,15 @@ def delete_city(city_id):
                  strict_slashes=False, methods=["POST"])
 def create_city(state_id):
     """ POST /api/v1/states/<state_id>/cities """
-    city_name = request.get_json()
+    post_city = request.get_json()
     if not storage.get(State, state_id):
         abort(404)
-    if not city_name:
+    if not post_city:
         abort(400, {"Not a JSON"})
-    elif 'name' not in city_name:
+    elif 'name' not in post_city:
         abort(400, {"Missing name"})
-    city_name['state_id'] = state_id
-    new_city = City(**city_name)
+    post_city['state_id'] = state_id
+    new_city = City(**post_city)
     storage.new(new_city)
     storage.save()
     return jsonify(new_city.to_dict()), 201
@@ -64,14 +64,14 @@ def create_city(state_id):
                  strict_slashes=False, methods=["PUT"])
 def update_city(city_id):
     """ PUT /api/v1/cities/<city_id> """
-    get_city = request.get_json()
-    if not get_city:
+    put_city = request.get_json()
+    if not put_city:
         abort(400, "{Not a JSON}")
-    try:
-        city = storage.get(City, city_id)
-    except KeyError:
+    db_city = storage.get(City, city_id)
+    if not db_city:
         abort(404)
     for k, v in get_city.items():
-        setattr(city, k, v)
+        if k not in ['id', 'created_at', 'updated_at']
+            setattr(city, k, v)
     storage.save()
     return jsonify(city.to_dict())
