@@ -6,6 +6,8 @@ from flask import Flask, jsonify, abort, request
 from api.v1.views import app_views
 from models import storage
 from models.place import Place
+from models.city import City
+from models.user import User
 
 
 @app_views.route('/api/v1/cities/<city_id>/places', strict_slashes=False)
@@ -40,7 +42,8 @@ def delete_place(place_id):
     abort(404)
 
 
-@app_views.route('/api/v1/cities/<city_id>/places', methods=['POST'], strict_slashes=False)
+@app_views.route('/api/v1/cities/<city_id>/places', methods=['POST'],
+                 strict_slashes=False)
 def create_place(city_id):
     """ POST /api/v1/places """
     post_place = request.get_json()
@@ -50,8 +53,9 @@ def create_place(city_id):
         abort(400, {'Missing name'})
     if 'user_id' not in post_place:
         abort(400, {'Missing user_id'})
-    if not storage.get(User, user_id) or not storage.get(City, city_id):
-        abort(404)
+    if not storage.get(User, post_place['user_id']) or \
+       not storage.get(City, city_id):
+            abort(404)
     post_place['city_id'] = city_id
     new_place = Place(**post_place)
     storage.new(new_place)
