@@ -9,8 +9,8 @@ from models.state import State
 @app_views.route('/api/v1/states', strict_slashes=False)
 def all_states():
     """ GET /api/v1/states """
-    all_states = [state.to_dict() for state in storage.all('State').values()]
-    return jsonify(all_states)
+    states_list = [state.to_dict() for state in storage.all('State').values()]
+    return jsonify(states_list)
 
 
 @app_views.route('/api/v1/states/<state_id>', strict_slashes=False)
