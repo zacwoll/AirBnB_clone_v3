@@ -14,7 +14,7 @@ def all_reviews(place_id):
     """ Return JSON of all user objects """
     if not storage.get(Place, place_id):
         abort(404)
-    all_reviews = [reviews.to_dict() for review in
+    all_reviews = [review.to_dict() for review in
                      storage.all('Review').values()
                    if place_id == review.place_id]
     return jsonify(all_reviews)
