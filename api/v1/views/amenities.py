@@ -21,7 +21,7 @@ def get_amenities(amenity_id):
     """ Get /api/v1/amenities """
     try:
         amenity = storage.get(Amenity, amenity_id)
-    except TypeError:
+    except AttributeError:
         abort(404)
     return jsonify(amenity.to_dict())
 
@@ -30,13 +30,12 @@ def get_amenities(amenity_id):
                  strict_slashes=False)
 def delete_amenity(amenity_id):
     """ DELETE /api/v1/amenities/<amenity_id> """
-    try:
-        amenity = storage.get(Amenity, amenity_id)
+    amenity = storage.get(Amenity, amenity_id)
+    if amenity:
         storage.delete(amenity)
         storage.save()
         return {}, 200
-    except TypeError:
-        abort(404)
+    abort(404)
 
 
 @app_views.route('/api/v1/amenities', methods=['POST'], strict_slashes=False)
@@ -60,9 +59,8 @@ def update_amenity(amenity_id):
     put_amenity = request.get_json()
     if not put_amenity:
         abort(400, {'Not a JSON'})
-    try:
-        db_amenity = storage.get(Amenity, amenity_id)
-    except TypeError:
+    db_amenity = storage.get(Amenity, amenity_id)
+    if not db_amenity:
         abort(404)
     for k, v in put_amenity.items():
         if k not in ['id', 'created_at', 'updated_at']:
