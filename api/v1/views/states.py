@@ -19,7 +19,7 @@ def get_state(state_id):
     try:
         state = storage.get(State, state_id).to_dict()
         return jsonify(state)
-    except:
+    except AttributeError:
         abort(404)
 
 
@@ -27,24 +27,23 @@ def get_state(state_id):
                  strict_slashes=False)
 def del_state(state_id):
     """ DELETE /api/v1/states/<state_id> """
-    try:
-        state = storage.get(State, state_id)
+    state = storage.get(State, state_id)
+    if state:
         storage.delete(state)
         storage.save()
         return {}, 200
-    except:
-        abort(404)
+    abort(404)
 
 
 @app_views.route('/api/v1/states', methods=['POST'], strict_slashes=False)
 def create_state():
     """ POST /api/v1/states """
-    state_name = request.get_json()
-    if not state_name:
+    post_state = request.get_json()
+    if not post_state:
         abort(400, {'Not a JSON'})
-    elif 'name' not in state_name:
+    elif 'name' not in post_state:
         abort(400, {'Missing name'})
-    new_state = State(**state_name)
+    new_state = State(**post_state)
     storage.new(new_state)
     storage.save()
     return jsonify(new_state.to_dict()), 201
@@ -54,14 +53,14 @@ def create_state():
                  strict_slashes=False)
 def update_state(state_id):
     """ PUT /api/v1/states/<state_id> """
-    get_state = request.get_json()
-    if not get_state:
+    put_state = request.get_json()
+    if not put_state:
         abort(400, {'Not a JSON'})
-    try:
-        state = storage.get(State, state_id)
-    except KeyError:
+    db_state = storage.get(State, state_id)
+    if not db_state:
         abort(404)
-    for k, v in get_state.items():
-        setattr(state, k, v)
+    for k, v in put_state.items():
+        if k not in ['id', 'created_at', 'updated_at']:
+            setattr(db_state, k, v)
     storage.save()
-    return jsonify(state.to_dict())
+    return jsonify(db_state.to_dict())
