@@ -17,7 +17,7 @@ def close_session(response):
     """ Closes DB session """
     storage.close()
 
-# I need an error handling method
+
 @app.errorhandler(404)
 def page_not_found(error):
     """ Handle 404 error """
