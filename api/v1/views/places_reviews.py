@@ -9,13 +9,14 @@ from models.place import Place
 from models.user import User
 from models.review import Review
 
+
 @app_views.route('/api/v1/places/<place_id>/reviews', strict_slashes=False)
 def all_reviews(place_id):
     """ Return JSON of all user objects """
     if not storage.get(Place, place_id):
         abort(404)
     all_reviews = [review.to_dict() for review in
-                     storage.all('Review').values()
+                   storage.all('Review').values()
                    if place_id == review.place_id]
     return jsonify(all_reviews)
 
@@ -55,7 +56,7 @@ def create_review(place_id):
         abort(400, {'Missing user_id'})
     if not storage.get(User, post_review['user_id']) or \
        not storage.get(Place, place_id):
-            abort(404)
+        abort(404)
     post_review['place_id'] = place_id
     new_review = Review(**post_review)
     storage.new(new_review)

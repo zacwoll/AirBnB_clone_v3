@@ -12,7 +12,7 @@ from models.user import User
 def all_users():
     """ Return JSON of all user objects """
     all_users = [user.to_dict() for user in
-                     storage.all('User').values()]
+                 storage.all('User').values()]
     return jsonify(all_users)
 
 

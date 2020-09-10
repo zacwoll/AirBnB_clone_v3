@@ -16,7 +16,7 @@ def all_places(city_id):
     if not storage.get(City, city_id):
         abort(404)
     all_places = [place.to_dict() for place in
-                     storage.all('Place').values() if city_id == place.city_id]
+                  storage.all('Place').values() if city_id == place.city_id]
     return jsonify(all_places)
 
 
@@ -55,7 +55,7 @@ def create_place(city_id):
         abort(400, {'Missing user_id'})
     if not storage.get(User, post_place['user_id']) or \
        not storage.get(City, city_id):
-            abort(404)
+        abort(404)
     post_place['city_id'] = city_id
     new_place = Place(**post_place)
     storage.new(new_place)

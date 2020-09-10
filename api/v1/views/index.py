@@ -12,6 +12,7 @@ def status():
     """ Return 'OK' """
     return {"status": "OK"}
 
+
 @app_views.route('/api/v1/stats', strict_slashes=False)
 def stats():
     """ Retrieve stats from DB """
