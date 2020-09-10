@@ -86,7 +86,7 @@ def places_search():
     places_set = set()
     if not query:
         abort(400, {'Not a JSON'})
-    if "states" in query:
+    if "states" in query and query["states"]:
         states = [storage.get(State, state_id)
                   for state_id in query["states"]]
         states = [s for s in states if s is not None]
@@ -98,6 +98,11 @@ def places_search():
         places_set.update({place for city in cities for place in city.places})
         if len(places_set) == 0:
                   places_set.update({storage.all("Place").values()})
-    if "amenities" in query:
+    if "amenity" in query and query["amenities"]:
         amenities = [storage.get(Amenity, amenity_id)
                      for amenity_id in query["amenities"]]
+        places_set = {place for place in places_set
+                      if all(amenity in place.amenities
+                             for amenity in amenities)}
+    places_set = [place.to_dict() for place in places_set]
+    return jsonify(places_set)
