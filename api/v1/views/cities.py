@@ -71,6 +71,6 @@ def update_city(city_id):
         abort(404)
     for k, v in put_city.items():
         if k not in ['id', 'created_at', 'updated_at']:
-            setattr(city, k, v)
+            setattr(db_city, k, v)
     storage.save()
-    return jsonify(city.to_dict()), 200
+    return jsonify(db_city.to_dict()), 200
