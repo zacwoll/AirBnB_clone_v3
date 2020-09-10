@@ -10,6 +10,7 @@ from models.city import City
 from models.user import User
 from models.state import State
 
+
 @app_views.route('/api/v1/cities/<city_id>/places', strict_slashes=False)
 def all_places(city_id):
     """ Return JSON of all user objects """
