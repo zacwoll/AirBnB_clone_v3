@@ -69,7 +69,7 @@ def update_city(city_id):
     db_city = storage.get(City, city_id)
     if not db_city:
         abort(404)
-    for k, v in get_city.items():
+    for k, v in put_city.items():
         if k not in ['id', 'created_at', 'updated_at']:
             setattr(city, k, v)
     storage.save()
