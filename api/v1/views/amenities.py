@@ -20,10 +20,10 @@ def all_amenities():
 def get_amenities(amenity_id):
     """ Get /api/v1/amenities """
     try:
-        amenity = storage.get(Amenity, amenity_id)
+        amenity = storage.get(Amenity, amenity_id).to_dict()
     except AttributeError:
         abort(404)
-    return jsonify(amenity.to_dict())
+    return jsonify(amenity)
 
 
 @app_views.route('/api/v1/amenities/<amenity_id>', methods=['Delete'],
@@ -66,4 +66,4 @@ def update_amenity(amenity_id):
         if k not in ['id', 'created_at', 'updated_at']:
             setattr(db_amenity, k, v)
     storage.save()
-    return jsonify(db_amenity.to_dict())
+    return jsonify(db_amenity.to_dict()), 200
